@@ -31,9 +31,7 @@ services:
       placement:
         constraints: [node.role == manager]
 
-
   vote-app:
-    container_name: vote-app
     build: './vote-app/'
     depends_on:
       - redis
@@ -49,7 +47,6 @@ services:
         condition: on-failure
 
   backend-app:
-    container_name: backend-app
     build: './backend/'
     ports:
       - 4444:4444
@@ -81,8 +78,6 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
-
-  
 
 volumes:
   db-data:
