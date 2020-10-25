@@ -59,7 +59,6 @@ services:
     deploy:
       mode: replicated
       replicas: 1
-      labels: [APP=VOTING]
       restart_policy:
         condition: on-failure
         delay: 10s
