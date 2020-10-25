@@ -15,7 +15,6 @@ services:
   
   db:
     image: postgres:9.4
-    container_name: db
     tty: true
     restart: always
     environment:
