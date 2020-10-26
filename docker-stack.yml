@@ -31,7 +31,7 @@ services:
         constraints: [node.role == manager]
 
   vote-app:
-    build: 'gabriel984/voteapp_redis'
+    image: 'gabriel984/voteapp_redis'
     depends_on:
       - redis
     ports:
@@ -46,7 +46,7 @@ services:
         condition: on-failure
 
   backend-app:
-    build: 'gabriel984/voteapp_backend'
+    image: 'gabriel984/voteapp_backend'
     ports:
       - 4444:4444
     depends_on:
