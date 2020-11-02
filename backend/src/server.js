@@ -42,6 +42,7 @@ io.on('connection', (socket) => {
   subscriber.on("message", async (channel, message) => {
     const candidate = await Result.findOrCreate({where:{name: message}});
     await Result.update({vote: candidate[0].vote + 1},{where: {name: candidate[0].name}});
+    
     const candidates = await Result.findAll();
     
     io.emit('teste', candidates)

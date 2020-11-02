@@ -1,43 +1,18 @@
 version: '3'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
 services:
-
-
-  nginx:
-    image: nginx
-    deploy:
-      mode: replicated
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-      placement:
-        constraints: [node.role == manager]
-
-
+  estatico-vote:
+    image: nginx:alpine
+    volumes:
+      - ./frontend-vote:/usr/share/nginx/html
+    ports:
+      - 3000:80
+      
+  estatico-result:
+    image: nginx:alpine
+    volumes:
+      - ./frontend-result:/usr/share/nginx/html
+    ports:
+      - 3001:80
   redis:
     image: redis:alpine
     networks:
@@ -69,7 +44,7 @@ services:
         constraints: [node.role == manager]
 
   vote-app:
-    image: 'gabriel984/voteapp_redis'
+    build: './vote-app/'
     depends_on:
       - redis
     ports:
@@ -84,7 +59,7 @@ services:
         condition: on-failure
 
   backend-app:
-    image: 'gabriel984/voteapp_backend'
+    build: './backend/'
     ports:
       - 4444:4444
     depends_on:
