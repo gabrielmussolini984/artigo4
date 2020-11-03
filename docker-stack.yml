@@ -8,6 +8,7 @@ services:
       - 3000:80
     networks:
       - frontend
+      - backend
       
   estatico-result:
     image: nginx:alpine
@@ -16,6 +17,7 @@ services:
     ports:
       - 3001:80
     networks:
+      - frontend
       - backend
 
   redis:
