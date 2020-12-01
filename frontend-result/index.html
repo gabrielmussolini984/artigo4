@@ -40,7 +40,6 @@
             el[0].innerHTML = 0;
             el[1].innerHTML = 0;
           }
-          console.log(response);
           const frontend = response.data.candidates[0]?.vote || 0;
           const backend = response.data.candidates[1]?.vote || 0;
           const total = frontend + backend;
@@ -60,7 +59,6 @@
             : el[1].innerHTML;
           return true;
         } catch (error) {
-          console.log(error);
 
           const el = document.getElementsByClassName("option");
           el[0].innerHTML = `Front-end - 0%`;
@@ -72,7 +70,6 @@
 
       const socket = io("http://localhost:4444");
       socket.on("teste", (result) => {
-        console.log(result);
         const frontend = result[0].vote || 0;
         const backend = result[1]?.vote || 0;
         const total = frontend + backend;

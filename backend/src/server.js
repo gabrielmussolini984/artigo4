@@ -42,7 +42,6 @@ app.use(cors());
 subscriber.subscribe("voto");
 io.on("connection", (socket) => {
   subscriber.on("message", (channel, message) => {
-    console.log(message);
     Result.findOrCreate({
       where: { name: message },
       defaults: { name: message },
@@ -52,7 +51,6 @@ io.on("connection", (socket) => {
         { where: { name: message } }
       ).then((response) => {
         Result.findAll({ order: [["name", "DESC"]] }).then((candidates) => {
-          console.log(candidates);
           return io.emit("teste", candidates);
         });
       });
@@ -66,7 +64,6 @@ app.get("/", async (req, res) => {
 
   // return res.json({backend, frontend, total: frontend+backend});
   const candidates = await Result.findAll({ order: [["name", "DESC"]] });
-  console.log(candidates);
   return res.json({ candidates });
 });
 
