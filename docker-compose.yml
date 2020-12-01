@@ -1,29 +1,74 @@
 version: '3'
 services:
-  reverse-proxy:
-    # The official v2 Traefik docker image
-    image: traefik:v2.3
-    # Enables the web UI and tells Traefik to listen to docker
-    command: --api.insecure=true --providers.docker
-    ports:
-      # The HTTP port
-      - "80:80"
-      # The Web UI (enabled by --api.insecure=true)
-      - "8080:8080"
-    volumes:
-      # So that Traefik can listen to the Docker events
-      - /var/run/docker.sock:/var/run/docker.sock
-  estatico:
+  estatico-vote:
     image: nginx:alpine
     volumes:
       - ./frontend-vote:/usr/share/nginx/html
     ports:
       - 3000:80
-    labels:
-      - "traefik.http.routers.estatico.rule=Host(`estatico.localhost`)"
+    networks:
+      - frontend
+      - backend
+      
+  estatico-result:
+    image: nginx:alpine
+    volumes:
+      - ./frontend-result:/usr/share/nginx/html
+    ports:
+      - 3001:80
+    networks:
+      - frontend
+      - backend
 
-  whoami:
-    # A container that exposes an API to show its IP address
-    image: traefik/whoami
-    labels:
-      - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)"
+  redis:
+    image: redis:alpine
+    networks:
+      - frontend
+      - backend
+  
+  db:
+    image: postgres:11.10-alpine
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    volumes:
+      - "db-data:/var/lib/postgresql/data"
+    networks:
+      - backend
+    ports:
+      - '5432:5432'
+
+  vote-app:
+    build: './vote-app/'
+    depends_on:
+      - redis
+      - db
+    ports:
+      - 3333:3333
+    networks:
+      - frontend
+
+  backend-app:
+    build: './backend/'
+    ports:
+      - 4444:4444
+    depends_on:
+      - redis
+      - db
+    networks:
+      - backend
+      - frontend
+
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+volumes:
+  db-data:
+
+networks:
+  frontend:
+  backend:

@@ -1,43 +1,88 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Result App</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js" integrity="sha512-AcZyhRP/tbAEsXCCGlziPun5iFvcSUpEz2jKkx0blkYKbxU81F+iq8FURwPn1sYFeksJ+sDDrI5XujsqSobWdQ==" crossorigin="anonymous"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-  />
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-</head>
-<body>
-  <main id="container">
-    <div>
-      <h1>Resultado</h1>
-      <div class="option">
-        Front-end
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Result App</title>
+    <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js"
+      integrity="sha512-AcZyhRP/tbAEsXCCGlziPun5iFvcSUpEz2jKkx0blkYKbxU81F+iq8FURwPn1sYFeksJ+sDDrI5XujsqSobWdQ=="
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+
+  <body>
+    <main id="container">
+      <div>
+        <h1>Resultado</h1>
+        <div class="option">Front-end</div>
+        <div class="option">Back-end</div>
       </div>
-      <div class="option">
-        Back-end
-      </div>
-    </div>
-  </main>
-  <script>
-    const socket = io('http://localhost:4444');
-    socket.on('teste', result => {
-      const total = result[0].vote + result[1].vote; 
-      console.log(result)
-      const frontend = (result[0].vote / total) * 100;
-      const backend = (result[1].vote / total) * 100;
-      const el = document.getElementsByClassName('option');
-      el[0].innerHTML = `${result[0].name} - ${frontend.toPrecision(2)}%`; 
-      el[1].innerHTML = `${result[1].name} - ${backend.toPrecision(2)}%`; 
-    })
-  </script>
-</body>
+    </main>
+    <script>
+      const firstLoad = async () => {
+        try {
+          const response = await axios.get("http://localhost:4444");
+          if (!response) {
+            const el = document.getElementsByClassName("option");
+            el[0].innerHTML = 0;
+            el[1].innerHTML = 0;
+          }
+          console.log(response);
+          const frontend = response.data.candidates[0]?.vote || 0;
+          const backend = response.data.candidates[1]?.vote || 0;
+          const total = frontend + backend;
+          const frontend_result = (frontend / total) * 100;
+          const backend_result = (backend / total) * 100;
+          const el = document.getElementsByClassName("option");
+          el[0].innerHTML = `${
+            response.data.candidates[0]?.name
+          } - ${frontend_result.toPrecision(2)}%`;
+          el[1].innerHTML = response.data.candidates[1]
+            ? `${
+                response.data.candidates[1]?.name
+              } - ${backend_result.toPrecision(2)}%`
+            : el[1].innerHTML;
+          return true;
+        } catch (error) {
+          console.log(error);
+
+          const el = document.getElementsByClassName("option");
+          el[0].innerHTML = `Front-end - 0%`;
+          el[1].innerHTML = `Back-end - 0%`;
+        }
+      };
+
+      firstLoad();
+
+      const socket = io("http://localhost:4444");
+      socket.on("teste", (result) => {
+        console.log(result);
+        const frontend = result[0].vote || 0;
+        const backend = result[1]?.vote || 0;
+        const total = frontend + backend;
+        const frontend_result = (frontend / total) * 100;
+        const backend_result = (backend / total) * 100;
+        const el = document.getElementsByClassName("option");
+        el[0].innerHTML = `${result[0].name} - ${frontend_result.toPrecision(
+          2
+        )}%`;
+        el[1].innerHTML = `${result[1].name} - ${backend_result.toPrecision(
+          2
+        )}%`;
+      });
+    </script>
+  </body>
 </html>

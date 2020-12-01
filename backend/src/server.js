@@ -1,35 +1,37 @@
 import express from "express";
 import redis from "redis";
-import  pkg from 'sequelize';
-import http from 'http'
-import cors from 'cors'
-const {DataTypes, Sequelize} = pkg;
+import pkg from "sequelize";
+import http from "http";
+import cors from "cors";
+const { DataTypes, Sequelize } = pkg;
 const sequelize = new Sequelize("database", "postgres", "postgres", {
   host: "db",
   dialect: "postgres",
 });
-const Result = sequelize.define('Result', {
-  // Model attributes are defined here
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
+const Result = sequelize.define(
+  "Result",
+  {
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
+    },
+    vote: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
   },
-  vote: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
+  {
+    // Other model options go here
   }
-}, {
-  // Other model options go here
-});
+);
 
-import socketIo from 'socket.io';
+import socketIo from "socket.io";
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server)
+const io = socketIo(server);
 
-
-
-app.use(cors())
+app.use(cors());
 const subscriber = redis.createClient({
   host: "redis",
 });
@@ -37,27 +39,32 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
+subscriber.subscribe("voto");
+io.on("connection", async (socket) => {
   subscriber.on("message", async (channel, message) => {
-    const candidate = await Result.findOrCreate({where:{name: message}});
-    await Result.update({vote: candidate[0].vote + 1},{where: {name: candidate[0].name}});
-    
-    const candidates = await Result.findAll();
-    
-    io.emit('teste', candidates)
+    console.log("Passou")
+    const [candidate] = await Result.findOrCreate({ where: { name: message } });
+    if (!candidate) return "Nao existe";
+    await Result.update(
+      { vote: candidate.vote + 1 },
+      { where: { id: candidate.id } }
+    );
+
+    const candidates = await Result.findAll({ order: [["name", "DESC"]] });
+    io.emit("teste", candidates);
   });
 });
 
-subscriber.subscribe("voto");
-
-
 app.get("/", async (req, res) => {
-  
-  return res.json(candidates);
+  // const backend = await Result.count({where: {name: "Back-end"}});
+  // const frontend = await Result.count({where: {name: "Front-end"}});
+
+  // return res.json({backend, frontend, total: frontend+backend});
+  const candidates = await Result.findAll({ order: [["name", "DESC"]] });
+  console.log(candidates);
+  return res.json({ candidates });
 });
 
 sequelize.sync().then(() => {
   server.listen(4444, () => console.log("Backend running"));
-})
-
+});
