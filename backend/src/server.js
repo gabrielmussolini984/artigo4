@@ -40,18 +40,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 subscriber.subscribe("voto");
-io.on("connection", async (socket) => {
-  subscriber.on("message", async (channel, message) => {
-    console.log("Passou")
-    const [candidate] = await Result.findOrCreate({ where: { name: message } });
-    if (!candidate) return "Nao existe";
-    await Result.update(
-      { vote: candidate.vote + 1 },
-      { where: { id: candidate.id } }
-    );
-
-    const candidates = await Result.findAll({ order: [["name", "DESC"]] });
-    io.emit("teste", candidates);
+io.on("connection", (socket) => {
+  subscriber.on("message", (channel, message) => {
+    console.log(message)
+    io.emit("teste", message);
   });
 });
 

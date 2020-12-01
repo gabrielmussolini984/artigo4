@@ -32,56 +32,56 @@
       </div>
     </main>
     <script>
-      const firstLoad = async () => {
-        try {
-          const response = await axios.get("http://localhost:4444");
-          if (!response) {
-            const el = document.getElementsByClassName("option");
-            el[0].innerHTML = 0;
-            el[1].innerHTML = 0;
-          }
-          console.log(response);
-          const frontend = response.data.candidates[0]?.vote || 0;
-          const backend = response.data.candidates[1]?.vote || 0;
-          const total = frontend + backend;
-          const frontend_result = (frontend / total) * 100;
-          const backend_result = (backend / total) * 100;
-          const el = document.getElementsByClassName("option");
-          el[0].innerHTML = `${
-            response.data.candidates[0]?.name
-          } - ${frontend_result.toPrecision(2)}%`;
-          el[1].innerHTML = response.data.candidates[1]
-            ? `${
-                response.data.candidates[1]?.name
-              } - ${backend_result.toPrecision(2)}%`
-            : el[1].innerHTML;
-          return true;
-        } catch (error) {
-          console.log(error);
+      // const firstLoad = async () => {
+      //   try {
+      //     const response = await axios.get("http://localhost:4444");
+      //     if (!response) {
+      //       const el = document.getElementsByClassName("option");
+      //       el[0].innerHTML = 0;
+      //       el[1].innerHTML = 0;
+      //     }
+      //     console.log(response);
+      //     const frontend = response.data.candidates[0]?.vote || 0;
+      //     const backend = response.data.candidates[1]?.vote || 0;
+      //     const total = frontend + backend;
+      //     const frontend_result = (frontend / total) * 100;
+      //     const backend_result = (backend / total) * 100;
+      //     const el = document.getElementsByClassName("option");
+      //     el[0].innerHTML = `${
+      //       response.data.candidates[0]?.name
+      //     } - ${frontend_result.toPrecision(2)}%`;
+      //     el[1].innerHTML = response.data.candidates[1]
+      //       ? `${
+      //           response.data.candidates[1]?.name
+      //         } - ${backend_result.toPrecision(2)}%`
+      //       : el[1].innerHTML;
+      //     return true;
+      //   } catch (error) {
+      //     console.log(error);
 
-          const el = document.getElementsByClassName("option");
-          el[0].innerHTML = `Front-end - 0%`;
-          el[1].innerHTML = `Back-end - 0%`;
-        }
-      };
+      //     const el = document.getElementsByClassName("option");
+      //     el[0].innerHTML = `Front-end - 0%`;
+      //     el[1].innerHTML = `Back-end - 0%`;
+      //   }
+      // };
 
-      firstLoad();
+      // firstLoad();
 
       const socket = io("http://localhost:4444");
       socket.on("teste", (result) => {
         console.log(result);
-        const frontend = result[0].vote || 0;
-        const backend = result[1]?.vote || 0;
-        const total = frontend + backend;
-        const frontend_result = (frontend / total) * 100;
-        const backend_result = (backend / total) * 100;
-        const el = document.getElementsByClassName("option");
-        el[0].innerHTML = `${result[0].name} - ${frontend_result.toPrecision(
-          2
-        )}%`;
-        el[1].innerHTML = `${result[1].name} - ${backend_result.toPrecision(
-          2
-        )}%`;
+        // const frontend = result[0].vote || 0;
+        // const backend = result[1]?.vote || 0;
+        // const total = frontend + backend;
+        // const frontend_result = (frontend / total) * 100;
+        // const backend_result = (backend / total) * 100;
+        // const el = document.getElementsByClassName("option");
+        // el[0].innerHTML = `${result[0].name} - ${frontend_result.toPrecision(
+        //   2
+        // )}%`;
+        // el[1].innerHTML = `${result[1].name} - ${backend_result.toPrecision(
+        //   2
+        // )}%`;
       });
     </script>
   </body>
