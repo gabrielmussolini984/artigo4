@@ -30,7 +30,7 @@ jobs:
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     
     - name: Docker Build
-      run: docker build ./result-backend -t gabriel984/result-backend:${GITHUB_SHA}
+      run: docker build ./result-backend -t gabriel984/result-backend:$GITHUB_SHA
 
     - name: Docker Publish
       run: docker push DOCKER_USER/result-backend
