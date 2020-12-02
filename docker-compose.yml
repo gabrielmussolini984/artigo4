@@ -3,7 +3,7 @@ services:
   estatico-vote:
     image: nginx:alpine
     volumes:
-      - ./frontend-vote:/usr/share/nginx/html
+      - ./vote-frontend:/usr/share/nginx/html
     ports:
       - 3000:80
     networks:
@@ -13,7 +13,7 @@ services:
   estatico-result:
     image: nginx:alpine
     volumes:
-      - ./frontend-result:/usr/share/nginx/html
+      - ./result-frontend:/usr/share/nginx/html
     ports:
       - 3001:80
     networks:
@@ -38,8 +38,8 @@ services:
     ports:
       - '5432:5432'
 
-  vote-app:
-    build: './vote-app/'
+  vote-backend:
+    build: './vote-backend/'
     depends_on:
       - redis
       - db
@@ -48,8 +48,8 @@ services:
     networks:
       - frontend
 
-  backend-app:
-    build: './backend/'
+  result-backend:
+    build: './result-backend/'
     ports:
       - 4444:4444
     depends_on:
