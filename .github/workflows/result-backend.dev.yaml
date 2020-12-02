@@ -33,7 +33,7 @@ jobs:
       run: docker build ./result-backend -t gabriel984/result-backend:$GITHUB_SHA
 
     - name: Docker Publish
-      run: docker push DOCKER_USER/result-backend
+      run: docker push ${{secrets.DOCKER_USER}}/result-backend
 
     # # Configurando com a GCP
     # - uses: google-github-actions/setup-gcloud@master
