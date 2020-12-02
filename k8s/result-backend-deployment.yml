@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: result-backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: result-backend
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: result-backend
+    spec:
+      containers:
+      - name: result-backend
+        image: USER/IMAGE:TAG
+        ports:
+        - containerPort: 4444
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: 100m
+          limits:
+            memory: "128Mi"
+            cpu: 100m
+      imagePullSecrets:
+        - name: docker-hub-key
