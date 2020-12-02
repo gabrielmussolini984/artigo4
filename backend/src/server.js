@@ -68,5 +68,5 @@ app.get("/", async (req, res) => {
 });
 
 sequelize.sync().then(() => {
-  server.listen(4444, () => console.log("Backend runnng"));
+  server.listen(4444, () => console.log("Backend runnsadng"));
 });
