@@ -21,3 +21,14 @@
 
 8. Edite o workflow de acordo com sua necessidade.
   > .github/workflows/backend.dev.yml
+
+
+# Criando PV
+
+1. Crie o volume no gclouyd
+  > gcloud compute disks create --size=500GB --zone=us-central1-a my-data-disk
+
+2. Crie o PVC
+  >
+
+3. E o pod que utilizará esse pvc

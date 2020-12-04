@@ -1,3 +1,4 @@
 node_modules
 k8s/docker.json
 k8s/secret-docker.yml
+istio-1.8.0
