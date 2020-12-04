@@ -39,4 +39,4 @@ jobs:
       run: |-
         ls
         cd teste
-        kubectl cp teste/index.html $(kubectl get pod -l app=nginx -o jsonpath="{.items[0].metadata.name}"):/usr/share/nginx/html -c nginx
+        kubectl cp ./teste/index.html $(kubectl get pod -l app=nginx -o jsonpath="{.items[0].metadata.name}"):/usr/share/nginx/html -c nginx
