@@ -37,4 +37,7 @@ jobs:
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |-
+        ls
+        kubectl get po
+        
         kubectl cp ./index.html $(kubectl get pods --selector=app=nginx -o name):/usr/share/nginx/html -c nginx
